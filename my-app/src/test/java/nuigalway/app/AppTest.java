@@ -25,6 +25,9 @@ public class AppTest
     private Module BS111;
     private Module CP1001;
 
+
+    // create objects for test1
+
     public void setUpTest1()
     {
         //create a course
@@ -67,8 +70,8 @@ public class AppTest
     {
         setUpTest1();
         assertEquals("03/07/1998", conor.getDOB() );  //assert the DOB equals specificed DOB
-        assertEquals(16307046, conor.getID()); //assert ID equal to specified ID
-        String cName = (String) conor.getCourse().get(0).getCourseName(); //get name of course conor enrolled in and convert to string (only enrolled in one course)
+        assertEquals(16307046, conor.getID()); //assert ID equal to specified ID in test1
+        String cName = (String) conor.getCourse().get(0).getCourseName(); //get name of course student "conor" enrolled in and convert to string (only enrolled in one course)
         assertEquals(bct.getCourseName(), cName);  //check course names are the same
     }
 
@@ -91,42 +94,58 @@ public class AppTest
     }
 
     @Test
-    public void test1CourseInfo() //tests name and start date of course
+    public void test1CourseInfo() //tests name, start date and end date of course
     {
         setUpTest1();
-        assertEquals("BCT", bct.getCourseName());
+        assertEquals("BCT", bct.getCourseName());  //asset course name is correct
         assertEquals("2016-09-01T00:00:00.000+01:00",bct.getStartTime().toString()); //assert specified start time is equal to returned start time.
         assertEquals("2020-05-31T23:59:00.000+01:00",bct.getEndTime().toString()); //assert specified end time is equal to returned end time.
     }
 
-    public void setUpTest2()
+    public void setUpTest2()  //set up test2
     {
         //create a course
         bis = new Course("Business Information Systems",new DateTime(2015, 9, 1, 0, 0),new DateTime(2019, 5, 31, 23, 59));
-        //create three modules associated with BCT course
+
+        //create 2 modules associated with BIS course
         BS222 = new Module("Business and Law", "BS222");
         BS111 = new Module("Info Systems 101", "BS111");
 
         bis.addModule(BS222);   //add each module to the BIS course
         bis.addModule(BS111);
 
-
+       //create second course
         cpl = new Course("Corporate Law",new DateTime(2018, 9, 1, 0, 0),new DateTime(2022, 5, 31, 23, 59));
 
-        //create three modules associated with BCT course
+        //create 1 modules associated with CPL course
         CP1001 = new Module("Constitutional Law", "CP1001");
 
 
         cpl.addModule(BS222);   //add BS222 module to corp law course, both course attend this module
-        bis.addModule(CP1001);  //add corp law module to course
-        //create a student
+        cpl.addModule(CP1001);  //add corp law module to course
+
+        //create two student
         alan = new Student("Alan",20, "05/02/1999",16207444);
         mark = new Student("Mark",22, "07/06/1997",15207664);
-        bis.addStudent(alan);  //"enroll" student in course
-        alan.addCourse(bis);  //add course to student object
-        cpl.addStudent(mark); //"enroll" student in course
-        mark.addCourse(cpl);  //add course to student object
-        alan.addModule(BS222);  //add course modules to student
+
+        /**
+         * Add all Modules associated with each course to its modules list
+         * Add all Students attending course to course's students list
+         * Add all Modules a student is attending to student's modules list
+         * Add all Courses a student is enrolled in to the student's course(s) list
+         * Add all Students attending a module to the modules students list
+         * Add all Courses who contain this module to the modules course list.
+         */
+
+        bis.addStudent(alan);
+        cpl.addStudent(mark);
+        bis.addModule(BS111);
+        bis.addModule(BS222);
+        cpl.addModule(CP1001);
+        cpl.addModule(BS222);
+        alan.addCourse(bis);
+        mark.addCourse(cpl);
+        alan.addModule(BS222);
         alan.addModule(BS111);
         mark.addModule(CP1001);
         mark.addModule(BS222);
@@ -138,7 +157,6 @@ public class AppTest
         BS111.addStudent(alan);
         BS222.addStudent(mark);
         BS222.addStudent(alan);
-
     }
 
     @Test
@@ -150,5 +168,18 @@ public class AppTest
         String listOfStudents = studentsInBS222.get(0).getName()+", "+studentsInBS222.get(1).getName();
         assertEquals("Mark, Alan",listOfStudents);
     }
+
+
+    @Test
+    public void test3changeStudentInfo() //test case: A student gave incorrect information when registering, and needs to update it
+    {
+      Student gerry = new Student("Jerry", 18, "17/09/2001",1956878); //create student with incorrect info
+      gerry.setName("Gerry");  //update spelling error in name
+      gerry.setDOB("18/09/2001"); //update incorrect date of birth
+      assertTrue(gerry.getDOB() == "18/09/2001"); //confirm DOB changed successfully
+      assertEquals("Gerry", gerry.getName()); //confirm name change successfully
+    }
+
+
 
 }

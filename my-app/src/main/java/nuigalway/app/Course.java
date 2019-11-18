@@ -4,6 +4,16 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 
+
+/**
+ * Course class
+ * 	CourseName, StartTime and EndTime are set when instance is created, these are immutable, so no setter methods provided.
+ * addModule and addStudent allow Module and Student objects  to be added to their respective arraylist,
+ * so a record of what Modules provided by the course and Students attending the course are kept.
+ * getter methods for all fields created
+ */
+
+
 public class Course {
     private String courseName;
     private ArrayList<Module>  modules;
